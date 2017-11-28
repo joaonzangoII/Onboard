@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">Onboard</string>
+
+    <string name="action_sign_in">Sign in</string>
+    <string name="action_register">Register</string>
+    <string name="action_forgot_password">Forgot Password?</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="text_clock_in">Clock In</string>
+    <string name="text_clock_out">Clock Out</string>
+    <string name="text_history">History</string>
+    <string name="text_view_profile">View Profile</string>
+
+    <string name="prompt_name">Name</string>
+    <string name="prompt_id_number">ID Number</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="prompt_confirm_password">Confirm Password</string>
+    <string name="prompt_short_confirm_password">Confirm Password</string>
+
+    <string name="prompt_short_password">Password</string>
+    <string name="action_msg_already_have_account">Already have an account? Sign In</string>
+</resources>
