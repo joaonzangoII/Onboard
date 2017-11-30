@@ -24,17 +24,10 @@ import javax.mail.internet.MimeMultipart;
 public class GMailSender extends javax.mail.Authenticator {
     private String mailhost = "smtp.gmail.com";
     private String user;
-    private String password;
-
-    private Session session;
-
-
+    private String password;private Session session;
     private Multipart _multipart = new MimeMultipart();
-
     static {
-
         Security.addProvider(new JSSEProvider());
-
     }
 
 

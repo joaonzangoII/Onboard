@@ -30,7 +30,7 @@ public class GeofenceTrasitionService extends IntentService {
 
     public static Intent makeNotificationIntent(final Context applicationContext,
                                                 final String msg) {
-        return new Intent(MyApplication.getInstance(), MainActivity.class);
+        return new Intent(MyApplication.mInstance, MainActivity.class);
     }
 
 

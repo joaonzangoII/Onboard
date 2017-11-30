@@ -9,6 +9,7 @@
     <string name="text_clock_out">Clock Out</string>
     <string name="text_history">History</string>
     <string name="text_view_profile">View Profile</string>
+    <string name="text_log_out">Sign Out</string>
 
     <string name="prompt_name">Name</string>
     <string name="prompt_id_number">ID Number</string>

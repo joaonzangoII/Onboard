@@ -85,7 +85,7 @@ public class MainActivity extends BaseActivity implements
 
     public static Intent makeNotificationIntent(final Context applicationContext,
                                                 final String msg) {
-        return new Intent(MyApplication.getInstance(), MainActivity.class);
+        return new Intent(MyApplication.mInstance, MainActivity.class);
     }
 
 
@@ -113,7 +113,7 @@ public class MainActivity extends BaseActivity implements
                         AuthRequest.clockOut(
                                 sessionManager,
                                 MainActivity.this,
-                                time.id,
+                                time.getId(),
                                 requestHandler);
                     }
                 }
@@ -127,26 +127,14 @@ public class MainActivity extends BaseActivity implements
                         @Override
                         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                             switch (item.getItemId()) {
-                                /*case R.id.action_clock_out:
-                                    if (time != null) {
-                                        AuthRequest.clockOut(
-                                                sessionManager,
-                                                MainActivity.this,
-                                                time.id,
-                                                requestHandler);
-                                    } else {
-                                        Toast.makeText(MainActivity.this,
-                                                "You must clock in first",
-                                                Toast.LENGTH_SHORT).show();
-                                    }
-
-                                    //logout(sessionManager);
-                                    break;*/
                                 case R.id.action_history:
                                     goToActivity(HistoryActivity.class);
                                     break;
                                 case R.id.action_view_profile:
-
+                                    goToActivity(MyProfileActivity.class);
+                                    break;
+                                case R.id.action_logout:
+                                    logout(sessionManager);
                                     break;
                             }
                             return false;
@@ -157,7 +145,6 @@ public class MainActivity extends BaseActivity implements
             // realm.delete(GeofenceCoordinate.class);
             // fetchgeofencesAsync();
             // Defined in mili seconds.
-
             //final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             // setSupportActionBar(toolbar);
             user = sessionManager.getLoggedInUser();
@@ -172,11 +159,11 @@ public class MainActivity extends BaseActivity implements
             if (user == null) {
                 Toast.makeText(this, "User not yet activated", Toast.LENGTH_SHORT).show();
                 logout(sessionManager);
-            } else if (user.department == null) {
+            } else if (user.getDepartment() == null) {
                 Toast.makeText(this, "User not yet assigned a department", Toast.LENGTH_SHORT).show();
                 logout(sessionManager);
             } else {
-                department = user.department;
+                department = user.getDepartment();
             }
 
             textLat = (TextView) findViewById(R.id.lat);
@@ -203,12 +190,12 @@ public class MainActivity extends BaseActivity implements
             Toast.makeText(this, "User not yet assigned a department", Toast.LENGTH_SHORT).show();
             logout(sessionManager);
         } else {
-            final LatLng latLng = new LatLng(department.latitude, department.longitude);
-            final String title = department.latitude + ", " + department.longitude;
+            final LatLng latLng = new LatLng(department.getLatitude(), department.getLongitude());
+            final String title = department.getLatitude() + ", " + department.getLongitude();
             final Marker marker = map.addMarker(new MarkerOptions()
                     .position(latLng)
                     .title(title)
-                    .snippet(department.name)
+                    .snippet(department.getName())
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
             markerForGeofence(latLng);
 
@@ -305,31 +292,26 @@ public class MainActivity extends BaseActivity implements
             Toast.makeText(this, "User not yet assigned a department", Toast.LENGTH_SHORT).show();
             logout(sessionManager);
         } else {
-            final LatLng latlng = new LatLng(department.latitude, department.longitude);
-            startGeofence(latlng, department.radius);
+            final LatLng latlng = new LatLng(department.getLatitude(), department.getLongitude());
+            startGeofence(latlng, department.getRadius());
             isInGeofence = false;
 
             final Location geofenceLoc = new Location("");
-            geofenceLoc.setLatitude(department.latitude);
-            geofenceLoc.setLongitude(department.longitude);
+            geofenceLoc.setLatitude(department.getLatitude());
+            geofenceLoc.setLongitude(department.getLongitude());
 
-            if (geofenceLoc.distanceTo(lastLocation) < department.radius) {
+            final float distance = geofenceLoc.distanceTo(lastLocation);
+            if (distance < department.getRadius()) {
                 isInGeofence = true;
             }
 
+            Log.e("DISTANCE", distance + "");
+
             if (!isInGeofence) {
-                btnClockIn.setEnabled(true);
+                btnClockIn.setEnabled(false);
                 //logoutUserAfterTime(); // logout user if he is not in a geofence
             } else {
-                btnClockIn.setEnabled(false);
-                if (user != null) {
-                    // if (!user.equals(null)) {
-                    //    sendEmail(user.getEmail(), current.name);
-                    //    sendSms(user.getCellphoneNumber(), current.name);
-                    // }
-                } else {
-                    //logoutUserAfterTime();
-                }
+                btnClockIn.setEnabled(true);
             }
         }
 
@@ -483,8 +465,8 @@ public class MainActivity extends BaseActivity implements
     public void onResult(@NonNull final Status status) {
         Log.i(TAG, "onResult: " + status);
         if (status.isSuccess()) {
-            LatLng latLng = new LatLng(department.latitude, department.longitude);
-            drawGeofence(latLng, department.radius);
+            LatLng latLng = new LatLng(department.getLatitude(), department.getLongitude());
+            drawGeofence(latLng, department.getRadius());
         } else {
             // inform about fail
         }

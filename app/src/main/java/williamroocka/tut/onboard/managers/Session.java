@@ -9,25 +9,26 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.util.List;
 
 import williamroocka.tut.onboard.models.Time;
 import williamroocka.tut.onboard.models.User;
 import williamroocka.tut.onboard.utils.Constant;
 
 public class Session {
-    private static String TAG = Session.class.getSimpleName();
-    private SharedPreferences pref;
-    private SharedPreferences.Editor editor;
     private Context _context;
+    public static String TAG = "Session";
+    private static SharedPreferences.Editor editor;
+    private static SharedPreferences pref;
 
     @SuppressLint("CommitPrefEdits")
-    public Session(Context context) {
+    public Session(final Context context) {
         this._context = context;
         pref = _context.getSharedPreferences(Constant.PREF_NAME, Constant.PRIVATE_MODE);
         editor = pref.edit();
     }
 
-    public void setLogin(final boolean isLoggedIn) {
+    public void setLogin(final Boolean isLoggedIn) {
         editor.putBoolean(Constant.KEY_IS_LOGGED_IN, isLoggedIn);
         editor.apply();
     }
@@ -41,12 +42,10 @@ public class Session {
         final Gson gson = new GsonBuilder().create();
         final Type type = new TypeToken<User>() {
         }.getType();
-
-        final String data = pref.getString(Constant.KEY_LOGGED_IN_USER, null);
-        return gson.fromJson(data, type);
+        return gson.fromJson(pref.getString(Constant.KEY_LOGGED_IN_USER, null), type);
     }
 
-    public void setTime(final String user) {
+    public static void setTime(final String user) {
         editor.putString(Constant.KEY_TIME, user);
         editor.apply();
     }
@@ -55,12 +54,22 @@ public class Session {
         final Gson gson = new GsonBuilder().create();
         final Type type = new TypeToken<Time>() {
         }.getType();
-
-        final String data = pref.getString(Constant.KEY_TIME, null);
-        return gson.fromJson(data, type);
+        return gson.fromJson(pref.getString(Constant.KEY_TIME, null), type);
     }
 
-    public boolean isLoggedIn() {
+    public void setTimeEntries(final String timeEntries) {
+        editor.putString(Constant.KEY_TIME_ENTRIES, timeEntries);
+        editor.apply();
+    }
+
+    public List<Time> getTimeEntries() {
+        final Gson gson = new GsonBuilder().create();
+        final Type type = new TypeToken<List<Time>>() {
+        }.getType();
+        return gson.fromJson(pref.getString(Constant.KEY_TIME_ENTRIES, null), type);
+    }
+
+    public Boolean isLoggedIn() {
         return pref.getBoolean(Constant.KEY_IS_LOGGED_IN, false);
     }
 
@@ -76,7 +85,9 @@ public class Session {
         editor.apply();
     }
 
-    public String getServerUrl() {
+    public String getServerUrl()
+
+    {
         return pref.getString(Constant.KEY_SERVER_URL, Constant.KEY_DEFAULT_SERVER_URL);
     }
 }
